@@ -1,0 +1,303 @@
+{% extends "FactureFreeMobileBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<!-- this page specific styles -->
+	<link href="{{ asset('css/user-profile.css') }}" rel="stylesheet" type="text/css" media="screen" />    
+{% endblock %}
+
+{% block title %}{{ parent() }} Profile de{% endblock %}
+
+{% block nav_contact %}
+	<li class="active">
+		<div class="pointer">
+			<div class="arrow"></div>
+			<div class="arrow_border"></div>
+		</div>
+		<a href="{{ path('facture_free_mobile_contact') }}">
+			<i class="icon-group"></i>
+			<span>Contacts</span>
+		</a>
+	</li>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+	<div id="pad-wrapper" class="user-profile">
+		<!-- header -->
+		<div class="row-fluid header">
+			<div class="span8">
+				<h3 class="name">{{ contact.nom }} {{ contact.prenom }}</h3>
+				<span class="area">{{ contact.numero }}</span>
+			</div>
+			<a class="btn-flat icon pull-right delete-user" data-toggle="tooltip" title="Delete user" data-placement="top">
+				<i class="icon-trash"></i>
+			</a>
+			 <a class="btn-flat icon large pull-right edit">
+				Edit this person
+			</a>
+		</div>
+
+		<div class="row-fluid profile">
+			<!-- bio, new note & orders column -->
+			<div class="span9 bio">
+				<div class="profile-box">					
+					<div class="span12 section">
+						<h6>Appels</h6>
+						<br>
+						{% if appels|length > 0 %}
+							<!-- recent orders table -->
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="span2">
+											Date
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Origine
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Durée
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Coût
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for appel in appels %}
+										<!-- row -->
+										<tr>
+											<td>
+												{{ appel.date|localeDate }}
+											</td>
+											<td>
+												{{ appel.origine }}
+											</td>
+											<td>
+												{{ appel.duree|localeDate('none','medium') }}
+											</td>
+											<td>
+												{{ appel.cout|number_format(2, '.') }} €
+											</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							<div id="chart-call" style="height: 500px; margin-top: 68px;"></div>
+						{% else %}
+							<p>Aucun appel passé avec {{ contact.nom }} {{ contact.prenom }}</p>
+						{% endif %}
+					</div>
+					
+					<div class="span12 section">
+						<h6>SMS</h6>
+						<br>
+						{% if sms|length > 0 %}
+							<!-- recent orders table -->
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="span2">
+											Date
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Origine
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Quantite
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Coût
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for message in sms %}
+										<!-- row -->
+										<tr>
+											<td>
+												{{ message.date|localeDate }}
+											</td>
+											<td>
+												{{ message.origine }}
+											</td>
+											<td>
+												{{ message.quantite }}
+											</td>
+											<td>
+												{{ message.cout|number_format(2, '.') }} €
+											</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							<div id="chart-sms" style="height: 500px; margin-top: 68px;"></div>
+						{% else %}
+							<p>Aucun sms envoyé à {{ contact.nom }} {{ contact.prenom }}</p>
+						{% endif %}
+					</div>
+					
+					<div class="span12 section">
+						<h6>MMS</h6>
+						<br>
+						{% if mms|length > 0 %}
+							<!-- recent orders table -->
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th class="span2">
+											Date
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Origine
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Volume
+										</th>
+										<th class="span3">
+											<span class="line"></span>
+											Coût
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for message in mms %}
+										<!-- row -->
+										<tr>
+											<td>
+												{{ message.date|localeDate }}
+											</td>
+											<td>
+												{{ message.origine }}
+											</td>
+											<td>
+												{{ message.volume }}
+											</td>
+											<td>
+												{{ message.cout|number_format(2, '.') }} €
+											</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						{% else %}
+							<p>Aucun mms envoyé à {{ contact.nom }} {{ contact.prenom }}</p>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+
+			<!-- side address column -->
+			<div class="span3 address pull-right">
+				<h6>Appels</h6>
+				<ul>
+					<li>{{ appels|length }} appel{% if appels|length > 1 %}s{% endif %} passé{% if appels|length > 1 %}s{% endif %} {% if appels|length > 0 %}pour un total de {{ call_sum|localeDate('none','medium') }}{% endif %}</li>
+					<li class="ico-li"><i class="ico-phone"></i>Premier : {% if first_call != null %}{{ first_call|localeDate('long','medium') }}{% else %}Pas d'appel{% endif %}</li>
+					<li class="ico-li"><i class="ico-phone"></i>Dernier : {% if last_call != null %}{{ last_call|localeDate('long','medium') }}{% else %}Pas d'appel{% endif %}</li>
+				</ul><br />
+				<h6>SMS</h6>
+				<ul>
+					<li>{{ sms|length }} SMS envoyé{% if sms|length > 1 %}s{% endif %}</li>
+					<li class="ico-li"><i class="icon-envelope-alt"></i>Premier : {% if first_sms != null %}{{ first_sms|localeDate('long','medium') }}{% else %}Pas de SMS{% endif %}</li>
+					<li class="ico-li"><i class="icon-envelope"></i>Dernier : {% if last_sms != null %}{{ last_sms|localeDate('long','medium') }}{% else %}Pas de SMS{% endif %}</li>
+				</ul><br />
+				<h6>MMS</h6>
+				<ul>
+					<li>{{ mms|length }} MMS envoyé{% if mms|length > 1 %}s{% endif %}</li>
+					<li class="ico-li"><i class="icon-envelope-alt"></i>Premier : {% if first_mms != null %}{{ first_mms|localeDate('long','medium') }}{% else %}Pas de MMS{% endif %}</li>
+					<li class="ico-li"><i class="icon-envelope"></i>Dernier : {% if last_mms != null %}{{ last_mms|localeDate('long','medium') }}{% else %}Pas de MMS{% endif %}</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+	{{ parent() }}
+	<script src="{{ asset('js/jquery-migrate-1.2.1.min.js') }}"></script>
+	<script src="{{ asset('js/jquery.dataTables.js') }}"></script>
+	<script src="{{ asset('js/highstock.js') }}"></script>
+	<script src="{{ asset('js/modules/exporting.js') }}"></script>
+	<script>
+		$(document).ready(function() {
+			$('table.table').dataTable({
+				"bSort": false,
+				"bFilter": false,
+				"bLengthChange": false,
+				"bInfo": false,
+				"iDisplayLength": 15,
+				"sPaginationType": "full_numbers",
+			});
+			
+			if ($('#chart-call').length > 0)
+			{
+				$('#chart-call').highcharts('StockChart', {
+					chart: {
+						alignTicks: false
+					},
+
+					rangeSelector: {
+						selected: 2
+					},
+
+					title: {
+						text: 'Temps passé par mois'
+					},
+
+					series: [{
+						type: 'column',
+						name: 'Temps (s)',
+						data: {{ chart_appels|serialize('json') }},
+						dataGrouping: {
+							groupPixelWidth: 30,
+							units: [[
+								'month',
+								[1]
+							]]
+						}
+					}]
+				});
+			}
+			
+			if ($('#chart-sms').length > 0)
+			{
+				$('#chart-sms').highcharts('StockChart', {
+					chart: {
+						alignTicks: false
+					},
+
+					rangeSelector: {
+						selected: 2
+					},
+
+					title: {
+						text: 'SMS envoyés par mois'
+					},
+
+					series: [{
+						type: 'column',
+						name: 'SMS envoyés',
+						data: {{ chart_sms|serialize('json') }},
+						dataGrouping: {
+							groupPixelWidth: 30,
+							units: [[
+								'month',
+								[1]
+							]]
+						}
+					}]
+				});
+			}
+		} );
+	</script>
+{% endblock %}

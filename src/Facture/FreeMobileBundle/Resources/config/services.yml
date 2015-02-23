@@ -1,0 +1,32 @@
+parameters:
+#    facture_free_mobile.example.class: Facture\FreeMobileBundle\Example
+
+services:
+#    facture_free_mobile.example:
+#        class: %facture_free_mobile.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
+    facture_free_mobile.appel.admin:
+        class: Facture\FreeMobileBundle\Admin\AppelAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Facture, label: Appel }
+        arguments: [null, Facture\FreeMobileBundle\Entity\Appel, FactureFreeMobileBundle:AppelAdmin]
+    facture_free_mobile.contact.admin:
+        class: Facture\FreeMobileBundle\Admin\ContactAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Facture, label: Contact }
+        arguments: [null, Facture\FreeMobileBundle\Entity\Contact, FactureFreeMobileBundle:ContactAdmin]
+    facture_free_mobile.data.admin:
+        class: Facture\FreeMobileBundle\Admin\DataAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Facture, label: Data }
+        arguments: [null, Facture\FreeMobileBundle\Entity\Data, FactureFreeMobileBundle:DataAdmin]
+    facture_free_mobile.mms.admin:
+        class: Facture\FreeMobileBundle\Admin\MMSAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Facture, label: MMS }
+        arguments: [null, Facture\FreeMobileBundle\Entity\MMS, FactureFreeMobileBundle:MMSAdmin]
+    facture_free_mobile.sms.admin:
+        class: Facture\FreeMobileBundle\Admin\SMSAdmin
+        tags:
+            - { name: sonata.admin, manager_type: orm, group: Facture, label: SMS }
+        arguments: [null, Facture\FreeMobileBundle\Entity\SMS, FactureFreeMobileBundle:SMSAdmin]

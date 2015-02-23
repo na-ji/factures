@@ -1,0 +1,23 @@
+facture_free_mobile_homepage:
+    pattern:  /
+    defaults: { _controller: FactureFreeMobileBundle:Default:index }
+    
+facture_free_mobile_contact:
+    pattern:  /contact/{page}
+    defaults: { _controller: FactureFreeMobileBundle:Default:contact, page: 1 }
+    requirements:
+        page: \d+
+        
+facture_free_mobile_contact_profile:
+    pattern:  /contact/profile/{contact}
+    defaults: { _controller: FactureFreeMobileBundle:Default:contactProfile }
+    requirements:
+        id: \d+
+    
+facture_free_mobile_charts:
+    pattern:  /stats
+    defaults: { _controller: FactureFreeMobileBundle:Default:charts }
+    
+facture_free_mobile_import:
+    pattern:  /import
+    defaults: { _controller: FactureFreeMobileBundle:Default:import }

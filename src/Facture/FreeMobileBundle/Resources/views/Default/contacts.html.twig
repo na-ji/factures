@@ -1,0 +1,126 @@
+{% extends "FactureFreeMobileBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<!-- this page specific styles -->
+	<link href="{{ asset('css/user-list.css') }}" rel="stylesheet" type="text/css" media="screen" />    
+{% endblock %}
+
+{% block title %}{{ parent() }} Liste des contacts{% endblock %}
+
+{% block nav_contact %}
+	<li class="active">
+		<div class="pointer">
+			<div class="arrow"></div>
+			<div class="arrow_border"></div>
+		</div>
+		<a href="{{ path('facture_free_mobile_contact') }}">
+			<i class="icon-group"></i>
+			<span>Contacts</span>
+		</a>
+	</li>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+	<div id="pad-wrapper" class="users-list">
+		<div class="row-fluid header">
+			<h3>Users</h3>
+			<div class="span10 pull-right">
+				<input type="text" class="span5 search" placeholder="Type a user's name...">
+				
+				<!-- custom popup filter -->
+				<!-- styles are located in css/elements.css -->
+				<!-- script that enables this dropdown is located in js/theme.js -->
+				<div class="ui-dropdown">
+					<div class="head" data-toggle="tooltip" title="Click me!">
+						Filter users
+						<i class="arrow-down"></i>
+					</div>  
+					<div class="dialog">
+						<div class="pointer">
+							<div class="arrow"></div>
+							<div class="arrow_border"></div>
+						</div>
+						<div class="body">
+							<p class="title">
+								Show users where:
+							</p>
+							<div class="form">
+								<select>
+									<option>Name</option>
+									<option>Email</option>
+									<option>Number of orders</option>
+									<option>Signed up</option>
+									<option>Last seen</option>
+								</select>
+								<select>
+									<option>is equal to</option>
+									<option>is not equal to</option>
+									<option>is greater than</option>
+									<option>starts with</option>
+									<option>contains</option>
+								</select>
+								<input type="text" />
+								<a class="btn-flat small">Add filter</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<a href="new-user.html" class="btn-flat success pull-right">
+					<span>&#43;</span>
+					NEW USER
+				</a>
+			</div>
+		</div>
+
+		<!-- Users table -->
+		<div class="row-fluid table">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th class="span4 sortable">
+							Nom
+						</th>
+						<th class="span3 sortable">
+							<span class="line"></span>Prenom
+						</th>
+						<th class="span2 sortable">
+							<span class="line"></span>Numero
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for contact in contacts %}
+					<!-- row -->
+					<tr class="first">
+						<td>
+							<a href="{{ path('facture_free_mobile_contact_profile', {'contact': contact.id}) }}" class="name">{{ contact.nom }}</a>
+						</td>
+						<td>
+							{{ contact.prenom }}
+						</td>
+						<td>
+							{{ contact.numero }}
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="pagination pull-right">
+			<ul>
+				<li><a href="{% if page > 1 %}{{ path('facture_free_mobile_contact', {'page': page-1}) }}{% else %}{{ path('facture_free_mobile_contact') }}{% endif %}">&#8249;</a></li>
+				{% for p in range(1, nb_page) %}
+					<li{% if p == page %} class="active"{% endif %}>
+						<a href="{{ path('facture_free_mobile_contact', {'page': p}) }}">{{ p }}</a>
+					</li>
+				{% endfor %}
+				<li><a href="{% if page < nb_page %}{{ path('facture_free_mobile_contact', {'page': page+1}) }}{% else %}{{ path('facture_free_mobile_contact') }}{% endif %}">&#8250;</a></li>
+			</ul>
+		</div>
+		<!-- end users table -->
+	</div>
+</div>
+{% endblock %}
